@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smoke and Vape Detection Gallery</title>
+    <title>Smoke and Vape Detection Dashboard</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #3498db, #ffffff); /* Blue to white gradient */
+            background: linear-gradient(135deg, #3498db, #ffffff);
             font-family: 'Arial', sans-serif;
             color: white;
             display: flex;
@@ -48,74 +49,68 @@
             font-weight: bold;
         }
 
-        .content {
+        .dashboard {
             position: relative;
             z-index: 2;
-            max-width: 1200px;
+            display: flex;
             width: 100%;
+            max-width: 1200px;
             padding: 20px;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .section {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            padding: 20px;
+            width: 30%;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .section h2 {
+            margin-top: 0;
+            font-size: 1.8em;
+            font-weight: bold;
             text-align: center;
         }
 
-        #latest-image-container {
-            text-align: center;
-            margin-bottom: 40px;
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        #latest-image {
-            width: 300px;
-            height: 300px;
-            border: 2px solid #fff;
-            margin-bottom: 20px;
-            object-fit: cover;
+        .data-table th, .data-table td {
+            border: 1px solid #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .data-table th {
+            background-color: #4a90e2;
+        }
+
+        .view-all {
+            color: #4a90e2;
+            cursor: pointer;
+            text-decoration: underline;
+            display: block;
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        #recent-image {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 15px;
+            object-fit: cover;
         }
 
-        #latest-image:hover {
+        #recent-image:hover {
             transform: scale(1.05);
             box-shadow: 0px 10px 15px rgba(255, 255, 255, 0.2);
-        }
-
-        #download-btn {
-            display: block;
-            margin: 20px auto;
-            background-color: #4a90e2;
-            color: white;
-            padding: 10px 30px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        #download-btn:hover {
-            background-color: #357ABD;
-            box-shadow: 0px 5px 10px rgba(255, 255, 255, 0.2);
-        }
-
-        #image-gallery {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .previous-image {
-            width: 100px;
-            height: 100px;
-            border: 1px solid #fff;
-            object-fit: cover;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 10px;
-        }
-
-        .previous-image:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 5px 10px rgba(255, 255, 255, 0.1);
         }
 
         #image-modal {
@@ -141,7 +136,7 @@
 
         #modal-content img {
             width: 400px;
-            height: 400px;
+            height: auto;
             object-fit: cover;
             border: 2px solid #444;
             border-radius: 10px;
@@ -156,44 +151,49 @@
             cursor: pointer;
         }
 
-        .signage {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            font-size: 1.5em;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-        }
     </style>
 </head>
+
 <body>
 
     <!-- Header Section -->
     <header>
-        <h1>Say No to Smoking: Vape Detection Gallery</h1>
+        <h1>Smoke and Vape Detection Dashboard</h1>
     </header>
 
-    <!-- No Smoking Signage -->
-    <div class="signage">
-        🚭 Please refrain from smoking or vaping in this area!
-    </div>
-
-    <!-- Main content area -->
-    <div class="content">
-
-        <!-- Latest Image Section -->
-        <div id="latest-image-container">
-            <h2>Latest Image</h2>
-            <img id="latest-image" src="" alt="Latest Image">
-            <a id="download-link" href="#" download="latest_image.jpg">
-                <button id="download-btn">Download Image</button>
-            </a>
+    <!-- Main Dashboard Area -->
+    <div class="dashboard">
+        <!-- Data History Section -->
+        <div class="section">
+            <h2>Data History</h2>
+            <table class="data-table" id="data-history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Location</th>
+                        <th>Trigger Type</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table-body">
+                    <!-- Data from Firebase will be inserted here -->
+                </tbody>
+            </table>
+            <span class="view-all" id="view-all-data">View All</span>
         </div>
 
-        <!-- Previous Images Gallery -->
-        <h3>Previous Images</h3>
-        <div id="image-gallery"></div>
+        <!-- Recent Location Section -->
+        <div class="section">
+            <h2>Recent Location</h2>
+            <p id="recent-location">Loading...</p>
+        </div>
 
+        <!-- Recent Image Section -->
+        <div class="section">
+            <h2>Recent Image</h2>
+            <img id="recent-image" src="" alt="Recent Image">
+            <span class="view-all" id="view-all-images">View All</span>
+        </div>
     </div>
 
     <!-- Modal for Image Preview -->
@@ -201,18 +201,15 @@
         <div id="modal-content">
             <span id="close-modal">&times;</span>
             <img id="modal-image" src="" alt="Preview Image">
-            <a id="download-link" href="#" download="modal_image.jpg">
-                <button id="download-btn">Download Image</button>
-            </a>
         </div>
     </div>
 
-    <!-- Firebase SDK (Use CDN links for browser-based apps) -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <script>
-        // Firebase configuration (replace with your Firebase config)
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAeHJM-GN1rQ5ETxKc2uJcb4Btm2WixXf8",
             authDomain: "smoke-vape-detection.firebaseapp.com",
@@ -227,38 +224,36 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Function to fetch images from Firebase Realtime Database
-        function fetchImages() {
-            const imagesRef = db.ref('images');  // Update with your Firebase reference
-            imagesRef.on('value', (snapshot) => {
-                const images = snapshot.val();
-                const imageKeys = Object.keys(images);
-                const latestKey = imageKeys[imageKeys.length - 1];
+        function fetchDashboardData() {
+            const dataRef = db.ref('images');
+            dataRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                const keys = Object.keys(data).reverse();
 
-                // Display the latest image
-                const latestImage = images[latestKey];
-                const latestImageElement = document.getElementById('latest-image');
-                latestImageElement.src = `data:image/jpeg;base64,${latestImage}`;
-
-                // Set download link for the latest image
-                document.getElementById('download-link').href = `data:image/jpeg;base64,${latestImage}`;
-
-                // Display previous images
-                const imageGallery = document.getElementById('image-gallery');
-                imageGallery.innerHTML = ''; // Clear existing images
-
-                // Loop through and display previous images except the latest
-                for (let i = imageKeys.length - 2; i >= 0; i--) {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = `data:image/jpeg;base64,${images[imageKeys[i]]}`;
-                    imgElement.className = 'previous-image';
-                    imgElement.setAttribute('data-base64', images[imageKeys[i]]);
-                    imgElement.addEventListener('click', showModal); // Add click event
-                    imageGallery.appendChild(imgElement);
+                // Populate Data History Table (last 5 entries)
+                const tableBody = document.getElementById('data-table-body');
+                tableBody.innerHTML = '';
+                for (let i = 0; i < Math.min(5, keys.length); i++) {
+                    const key = keys[i];
+                    const { date, time, location, triggerType, base64Image } = data[key];
+                    const row = `<tr>
+                                    <td>${date}</td>
+                                    <td>${time}</td>
+                                    <td>${location}</td>
+                                    <td>${triggerType}</td>
+                                </tr>`;
+                    tableBody.innerHTML += row;
                 }
 
-                // Add click event to the latest image for preview
-                latestImageElement.addEventListener('click', showModal);
+                // Display Recent Location and Image
+                if (keys.length > 0) {
+                    const recentData = data[keys[0]];
+                    document.getElementById('recent-location').innerText = recentData.location;
+                    const recentImageElement = document.getElementById('recent-image');
+                    recentImageElement.src = `data:image/jpeg;base64,${recentData.base64Image}`;
+                    recentImageElement.setAttribute('data-base64', recentData.base64Image);
+                    recentImageElement.addEventListener('click', showModal);
+                }
             });
         }
 
@@ -269,9 +264,6 @@
             const modalImage = document.getElementById('modal-image');
             modalImage.src = `data:image/jpeg;base64,${base64}`;
             modal.style.display = 'flex';
-
-            // Set download link for the modal image
-            document.getElementById('download-link').href = `data:image/jpeg;base64,${base64}`;
         }
 
         // Close modal
@@ -279,8 +271,9 @@
             document.getElementById('image-modal').style.display = 'none';
         });
 
-        // Fetch images on page load
-        window.onload = fetchImages;
+        fetchDashboardData();
     </script>
+
 </body>
+
 </html>
