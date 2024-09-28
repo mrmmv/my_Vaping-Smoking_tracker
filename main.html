@@ -80,7 +80,8 @@
             border-collapse: collapse;
         }
 
-        .data-table th, .data-table td {
+        .data-table th,
+        .data-table td {
             border: 1px solid #fff;
             padding: 10px;
             text-align: center;
@@ -113,40 +114,50 @@
             box-shadow: 0px 10px 15px rgba(255, 255, 255, 0.2);
         }
 
+        /* Modal Styles */
         #image-modal,
         #data-modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
+            top: 50px; /* Adjusted to float under the header */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%; /* Width of the modal */
+            max-width: 800px; /* Max width for larger screens */
+            background: rgba(34, 34, 34, 0.9); /* Slightly transparent background */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
             z-index: 1000;
+            padding: 20px;
         }
 
         #modal-content {
-            background: #222;
-            padding: 20px;
-            border-radius: 10px;
             text-align: center;
             color: white;
-            max-height: 90%;
+            max-height: 80vh;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column; /* Arrange items in a column */
         }
 
-        #modal-content img {
-            width: 400px;
-            height: auto;
+        #all-images-container {
+            display: flex; /* Arrange images in a row */
+            flex-wrap: wrap; /* Allow wrapping if necessary */
+            justify-content: center; /* Center images */
+        }
+
+        #all-images-container img {
+            width: 120px; /* Set a specific width for images */
+            height: 120px; /* Ensure height is the same */
             object-fit: cover;
             border: 2px solid #444;
             border-radius: 10px;
-            margin-bottom: 10px;
+            margin: 5px; /* Margin between images */
         }
 
-        #close-modal, #close-data-modal {
+        #close-modal,
+        #close-data-modal,
+        #close-images-modal {
             position: absolute;
             top: 10px;
             right: 20px;
@@ -172,7 +183,6 @@
             display: block;
             margin-top: 5px;
         }
-
     </style>
 </head>
 
@@ -274,8 +284,15 @@
             const parts = metadata.split(', ');
             const triggerType = parts[0].split(': ')[1];
             const location = parts[1].split(': ')[1];
-            const timestamp = parts[2].split(': ')[1];
-            const date = new Date(parseInt(timestamp));  // Convert the timestamp to a date object
+            const timestamp = parts[2].split(': ')[1]; // This is where we extract the timestamp
+
+            // Check if the timestamp is a Unix timestamp (seconds)
+            let date;
+            if (!isNaN(timestamp) && timestamp.length <= 10) { // Simple check for Unix timestamp
+                date = new Date(parseInt(timestamp) * 1000); // Convert to milliseconds
+            } else {
+                date = new Date(timestamp); // Assume it's an ISO string
+            }
 
             return {
                 triggerType: triggerType,
