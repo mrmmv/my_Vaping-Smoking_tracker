@@ -116,28 +116,30 @@
 
         /* Modal Styles */
         #image-modal,
-        #data-modal {
+        #data-modal,
+        #all-images-modal {
             display: none;
             position: fixed;
-            top: 50px; /* Adjusted to float under the header */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%; /* Width of the modal */
-            max-width: 800px; /* Max width for larger screens */
-            background: rgba(34, 34, 34, 0.9); /* Slightly transparent background */
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
             z-index: 1000;
-            padding: 20px;
         }
 
         #modal-content {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
             text-align: center;
             color: white;
-            max-height: 80vh;
+            max-height: 80%;
             overflow-y: auto;
-            display: flex;
-            flex-direction: column; /* Arrange items in a column */
+            width: 80%; /* Set a specific width for the modal */
+            max-width: 800px; /* Max width for larger screens */
         }
 
         #all-images-container {
@@ -183,6 +185,7 @@
             display: block;
             margin-top: 5px;
         }
+
     </style>
 </head>
 
