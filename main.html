@@ -148,13 +148,20 @@
             justify-content: center; /* Center images */
         }
 
+        #all-images-container .image-container {
+            display: flex;
+            flex-direction: column; /* Stack image and download link */
+            align-items: center; /* Center the contents */
+            margin: 10px; /* Margin between images */
+        }
+
         #all-images-container img {
             width: 120px; /* Set a specific width for images */
             height: 120px; /* Ensure height is the same */
             object-fit: cover;
             border: 2px solid #444;
             border-radius: 10px;
-            margin: 5px; /* Margin between images */
+            margin-bottom: 5px; /* Margin between image and download link */
         }
 
         #close-modal,
@@ -176,14 +183,6 @@
             cursor: pointer;
             text-decoration: underline;
             font-size: 1.2em;
-        }
-
-        .download-link {
-            color: #4a90e2;
-            text-decoration: underline;
-            cursor: pointer;
-            display: block;
-            margin-top: 5px;
         }
 
     </style>
@@ -357,8 +356,10 @@
 
                 keys.forEach((key) => {
                     const { image } = data[key];
-                    const imgElement = `<img src="data:image/jpeg;base64,${image}" alt="Image" />
-                                        <a href="data:image/jpeg;base64,${image}" download="image-${key}.jpg" class="download-link">Download</a>`;
+                    const imgElement = `<div class="image-container">
+                                            <img src="data:image/jpeg;base64,${image}" alt="Image" />
+                                            <a href="data:image/jpeg;base64,${image}" download="image-${key}.jpg" class="download-link">Download</a>
+                                        </div>`;
                     allImagesContainer.innerHTML += imgElement;
                 });
             });
