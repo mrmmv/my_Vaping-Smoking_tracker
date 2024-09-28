@@ -19,6 +19,8 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            min-height: 100vh; /* Full height for body */
+            position: relative; /* Allow positioning of child elements */
         }
 
         /* Dark overlay for the background image */
@@ -175,6 +177,7 @@
             cursor: pointer;
         }
 
+        /* Logout Link Styles */
         #logout {
             position: fixed;
             bottom: 10px;
@@ -183,6 +186,7 @@
             cursor: pointer;
             text-decoration: underline;
             font-size: 1.2em;
+            z-index: 2; /* Ensure it's above other elements */
         }
 
     </style>
