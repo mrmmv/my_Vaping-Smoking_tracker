@@ -113,7 +113,8 @@
             box-shadow: 0px 10px 15px rgba(255, 255, 255, 0.2);
         }
 
-        #image-modal {
+        #image-modal,
+        #data-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -132,6 +133,8 @@
             border-radius: 10px;
             text-align: center;
             color: white;
+            max-height: 90%;
+            overflow-y: auto;
         }
 
         #modal-content img {
@@ -140,9 +143,10 @@
             object-fit: cover;
             border: 2px solid #444;
             border-radius: 10px;
+            margin-bottom: 10px;
         }
 
-        #close-modal {
+        #close-modal, #close-data-modal {
             position: absolute;
             top: 10px;
             right: 20px;
@@ -159,6 +163,14 @@
             cursor: pointer;
             text-decoration: underline;
             font-size: 1.2em;
+        }
+
+        .download-link {
+            color: #4a90e2;
+            text-decoration: underline;
+            cursor: pointer;
+            display: block;
+            margin-top: 5px;
         }
 
     </style>
@@ -214,6 +226,26 @@
         </div>
     </div>
 
+    <!-- Modal for Viewing All Data -->
+    <div id="data-modal">
+        <div id="modal-content">
+            <span id="close-data-modal">&times;</span>
+            <table class="data-table" id="all-data-table">
+                <!-- Full data will be inserted here -->
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for Viewing All Images -->
+    <div id="all-images-modal">
+        <div id="modal-content">
+            <span id="close-images-modal">&times;</span>
+            <div id="all-images-container">
+                <!-- All images will be inserted here -->
+            </div>
+        </div>
+    </div>
+
     <!-- Logout Link -->
     <div id="logout">Logout</div>
 
@@ -262,18 +294,25 @@
                 // Populate Data History Table (last 5 entries)
                 const tableBody = document.getElementById('data-table-body');
                 tableBody.innerHTML = '';
-                for (let i = 0; i < Math.min(5, keys.length); i++) {
-                    const key = keys[i];
+                const allDataBody = document.getElementById('all-data-table');
+                allDataBody.innerHTML = '';
+
+                keys.forEach((key) => {
                     const { image, metadata } = data[key];
                     const parsedData = parseMetadata(metadata);
+
+                    // Display in main dashboard table
                     const row = `<tr>
                                     <td>${parsedData.date}</td>
                                     <td>${parsedData.time}</td>
                                     <td>${parsedData.location}</td>
                                     <td>${parsedData.triggerType}</td>
                                 </tr>`;
-                    tableBody.innerHTML += row;
-                }
+                    if (tableBody.rows.length < 5) tableBody.innerHTML += row;
+
+                    // Display in full data modal
+                    allDataBody.innerHTML += row;
+                });
 
                 // Display Recent Location and Image
                 if (keys.length > 0) {
@@ -288,7 +327,24 @@
             });
         }
 
-        // Function to show modal with image preview
+        function showAllImages() {
+            const dataRef = db.ref('images');
+            dataRef.once('value', (snapshot) => {
+                const data = snapshot.val();
+                const keys = Object.keys(data).reverse();
+                const allImagesContainer = document.getElementById('all-images-container');
+                allImagesContainer.innerHTML = '';
+
+                keys.forEach((key) => {
+                    const { image } = data[key];
+                    const imgElement = `<img src="data:image/jpeg;base64,${image}" alt="Image" />
+                                        <a href="data:image/jpeg;base64,${image}" download="image-${key}.jpg" class="download-link">Download</a>`;
+                    allImagesContainer.innerHTML += imgElement;
+                });
+            });
+        }
+
+        // Function to show modals
         function showModal(event) {
             const base64 = event.target.getAttribute('data-base64');
             const modal = document.getElementById('image-modal');
@@ -297,9 +353,28 @@
             modal.style.display = 'flex';
         }
 
-        // Close modal
+        // Show the modal for all data
+        document.getElementById('view-all-data').addEventListener('click', () => {
+            document.getElementById('data-modal').style.display = 'flex';
+        });
+
+        // Show the modal for all images
+        document.getElementById('view-all-images').addEventListener('click', () => {
+            document.getElementById('all-images-modal').style.display = 'flex';
+            showAllImages();
+        });
+
+        // Close modals
         document.getElementById('close-modal').addEventListener('click', () => {
             document.getElementById('image-modal').style.display = 'none';
+        });
+
+        document.getElementById('close-data-modal').addEventListener('click', () => {
+            document.getElementById('data-modal').style.display = 'none';
+        });
+
+        document.getElementById('close-images-modal').addEventListener('click', () => {
+            document.getElementById('all-images-modal').style.display = 'none';
         });
 
         // Logout click functionality
