@@ -151,6 +151,16 @@
             cursor: pointer;
         }
 
+        #logout {
+            position: fixed;
+            bottom: 10px;
+            right: 20px;
+            color: #4a90e2;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 1.2em;
+        }
+
     </style>
 </head>
 
@@ -204,6 +214,9 @@
         </div>
     </div>
 
+    <!-- Logout Link -->
+    <div id="logout">Logout</div>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -224,6 +237,22 @@
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Function to parse the metadata from the Firebase record
+        function parseMetadata(metadata) {
+            const parts = metadata.split(', ');
+            const triggerType = parts[0].split(': ')[1];
+            const location = parts[1].split(': ')[1];
+            const timestamp = parts[2].split(': ')[1];
+            const date = new Date(parseInt(timestamp));  // Convert the timestamp to a date object
+
+            return {
+                triggerType: triggerType,
+                location: location,
+                date: date.toLocaleDateString(),
+                time: date.toLocaleTimeString()
+            };
+        }
+
         function fetchDashboardData() {
             const dataRef = db.ref('images');
             dataRef.on('value', (snapshot) => {
@@ -235,12 +264,13 @@
                 tableBody.innerHTML = '';
                 for (let i = 0; i < Math.min(5, keys.length); i++) {
                     const key = keys[i];
-                    const { date, time, location, triggerType, base64Image } = data[key];
+                    const { image, metadata } = data[key];
+                    const parsedData = parseMetadata(metadata);
                     const row = `<tr>
-                                    <td>${date}</td>
-                                    <td>${time}</td>
-                                    <td>${location}</td>
-                                    <td>${triggerType}</td>
+                                    <td>${parsedData.date}</td>
+                                    <td>${parsedData.time}</td>
+                                    <td>${parsedData.location}</td>
+                                    <td>${parsedData.triggerType}</td>
                                 </tr>`;
                     tableBody.innerHTML += row;
                 }
@@ -248,10 +278,11 @@
                 // Display Recent Location and Image
                 if (keys.length > 0) {
                     const recentData = data[keys[0]];
-                    document.getElementById('recent-location').innerText = recentData.location;
+                    const parsedData = parseMetadata(recentData.metadata);
+                    document.getElementById('recent-location').innerText = parsedData.location;
                     const recentImageElement = document.getElementById('recent-image');
-                    recentImageElement.src = `data:image/jpeg;base64,${recentData.base64Image}`;
-                    recentImageElement.setAttribute('data-base64', recentData.base64Image);
+                    recentImageElement.src = `data:image/jpeg;base64,${recentData.image}`;
+                    recentImageElement.setAttribute('data-base64', recentData.image);
                     recentImageElement.addEventListener('click', showModal);
                 }
             });
@@ -269,6 +300,11 @@
         // Close modal
         document.getElementById('close-modal').addEventListener('click', () => {
             document.getElementById('image-modal').style.display = 'none';
+        });
+
+        // Logout click functionality
+        document.getElementById('logout').addEventListener('click', () => {
+            window.location.href = 'index.html';
         });
 
         fetchDashboardData();
