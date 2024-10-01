@@ -142,6 +142,7 @@
             overflow-y: auto;
             width: 80%; /* Set a specific width for the modal */
             max-width: 800px; /* Max width for larger screens */
+            position: relative; /* To position the close button */
         }
 
         #all-images-container {
@@ -155,6 +156,9 @@
             flex-direction: column; /* Stack image and download link */
             align-items: center; /* Center the contents */
             margin: 10px; /* Margin between images */
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 10px;
         }
 
         #all-images-container img {
@@ -164,6 +168,12 @@
             border: 2px solid #444;
             border-radius: 10px;
             margin-bottom: 5px; /* Margin between image and download link */
+        }
+
+        .image-info {
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #ccc;
         }
 
         #close-modal,
@@ -189,6 +199,13 @@
             z-index: 2; /* Ensure it's above other elements */
         }
 
+        /* Recent Image Time Styles */
+        #recent-image-time {
+            margin-top: 10px;
+            font-size: 1em;
+            color: #ccc;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -230,6 +247,7 @@
         <div class="section">
             <h2>Recent Image</h2>
             <img id="recent-image" src="" alt="Recent Image">
+            <p id="recent-image-time"></p> <!-- Added to display date and time -->
             <span class="view-all" id="view-all-images">View All</span>
         </div>
     </div>
@@ -312,13 +330,22 @@
             const dataRef = db.ref('images');
             dataRef.on('value', (snapshot) => {
                 const data = snapshot.val();
+                if (!data) {
+                    document.getElementById('data-table-body').innerHTML = '<tr><td colspan="4">No data available</td></tr>';
+                    document.getElementById('all-data-table').innerHTML = '<tr><td colspan="4">No data available</td></tr>';
+                    document.getElementById('recent-location').innerText = 'No data available';
+                    document.getElementById('recent-image').src = '';
+                    document.getElementById('recent-image-time').innerText = '';
+                    return;
+                }
+
                 const keys = Object.keys(data).reverse();
 
                 // Populate Data History Table (last 5 entries)
                 const tableBody = document.getElementById('data-table-body');
                 tableBody.innerHTML = '';
                 const allDataBody = document.getElementById('all-data-table');
-                allDataBody.innerHTML = '';
+                allDataBody.innerHTML = '<thead><tr><th>Date</th><th>Time</th><th>Location</th><th>Trigger Type</th></tr></thead><tbody>';
 
                 keys.forEach((key) => {
                     const { image, metadata } = data[key];
@@ -337,6 +364,8 @@
                     allDataBody.innerHTML += row;
                 });
 
+                allDataBody.innerHTML += '</tbody>'; // Close tbody
+
                 // Display Recent Location and Image
                 if (keys.length > 0) {
                     const recentData = data[keys[0]];
@@ -345,7 +374,13 @@
                     const recentImageElement = document.getElementById('recent-image');
                     recentImageElement.src = `data:image/jpeg;base64,${recentData.image}`;
                     recentImageElement.setAttribute('data-base64', recentData.image);
+                    recentImageElement.setAttribute('data-date', parsedData.date);
+                    recentImageElement.setAttribute('data-time', parsedData.time);
+                    recentImageElement.removeEventListener('click', showModal); // Remove previous listener to prevent multiple bindings
                     recentImageElement.addEventListener('click', showModal);
+
+                    // Set the date and time for the recent image
+                    document.getElementById('recent-image-time').innerText = `Captured on: ${parsedData.date} at ${parsedData.time}`;
                 }
             });
         }
@@ -354,14 +389,21 @@
             const dataRef = db.ref('images');
             dataRef.once('value', (snapshot) => {
                 const data = snapshot.val();
+                if (!data) {
+                    document.getElementById('all-images-container').innerHTML = '<p>No images available</p>';
+                    return;
+                }
+
                 const keys = Object.keys(data).reverse();
                 const allImagesContainer = document.getElementById('all-images-container');
                 allImagesContainer.innerHTML = '';
 
                 keys.forEach((key) => {
-                    const { image } = data[key];
+                    const { image, metadata } = data[key];
+                    const parsedData = parseMetadata(metadata);
                     const imgElement = `<div class="image-container">
                                             <img src="data:image/jpeg;base64,${image}" alt="Image" />
+                                            <div class="image-info">Captured on: ${parsedData.date} at ${parsedData.time}</div>
                                             <a href="data:image/jpeg;base64,${image}" download="image-${key}.jpg" class="download-link">Download</a>
                                         </div>`;
                     allImagesContainer.innerHTML += imgElement;
@@ -372,10 +414,25 @@
         // Function to show modals
         function showModal(event) {
             const base64 = event.target.getAttribute('data-base64');
+            const date = event.target.getAttribute('data-date');
+            const time = event.target.getAttribute('data-time');
             const modal = document.getElementById('image-modal');
             const modalImage = document.getElementById('modal-image');
             modalImage.src = `data:image/jpeg;base64,${base64}`;
+            // Optionally, you can display date and time in the modal as well
+            modal.querySelector('#modal-content').insertAdjacentHTML('beforeend', `<p>Captured on: ${date} at ${time}</p>`);
             modal.style.display = 'flex';
+        }
+
+        // Function to clear modal content when closed
+        function clearModalContent(modalId) {
+            const modal = document.getElementById(modalId);
+            const modalContent = modal.querySelector('#modal-content');
+            // Remove any <p> elements that were added dynamically
+            const extraInfo = modalContent.querySelector('p');
+            if (extraInfo) {
+                extraInfo.remove();
+            }
         }
 
         // Show the modal for all data
@@ -392,6 +449,7 @@
         // Close modals
         document.getElementById('close-modal').addEventListener('click', () => {
             document.getElementById('image-modal').style.display = 'none';
+            clearModalContent('image-modal');
         });
 
         document.getElementById('close-data-modal').addEventListener('click', () => {
@@ -407,7 +465,10 @@
             window.location.href = 'index.html';
         });
 
-        fetchDashboardData();
+        // Fetch data from Firebase on page load
+        window.onload = () => {
+            fetchDashboardData();
+        };
     </script>
 
 </body>
