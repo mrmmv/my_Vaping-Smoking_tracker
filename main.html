@@ -256,23 +256,39 @@
             margin-top: auto; /* Push footer to the bottom */
         }
 
+        /* Mobile Responsiveness */
         @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em; /* Smaller font size for mobile */
+            }
+
             .dashboard {
                 flex-direction: column;
                 align-items: center;
+                padding: 10px; /* Reduced padding for mobile */
             }
 
             .section {
-                width: 100%;
-                max-width: 400px;
+                width: 100%; /* Full width for mobile */
+                max-width: 100%; /* No max-width for mobile */
+                padding: 15px; /* Reduced padding for mobile */
             }
 
-            .view-all-btn {
-                width: 100%;
+            .view-all-btn, .download-btn {
+                width: 100%; /* Full width buttons for mobile */
             }
 
-            .download-btn {
-                width: 100%;
+            .data-table th, .data-table td {
+                padding: 8px; /* Reduced padding for mobile */
+            }
+
+            .modal-content {
+                width: 95%; /* Wider modal for mobile */
+                margin: 10% auto; /* Adjusted margin for mobile */
+            }
+
+            .image-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Smaller grid for mobile */
             }
         }
     </style>
@@ -347,7 +363,7 @@
     </div>
 
     <footer>
-        Powered by: AI Smoking Detection © 2025
+        Powered by: AI Smoking Detection and Notification ©2025
     </footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -492,3 +508,6 @@
 </body>
 
 </html>
+
+
+
