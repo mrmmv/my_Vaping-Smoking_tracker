@@ -1,389 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smoking Detection Dashboard</title>
+    <title>Login and Register</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #3498db, #ffffff);
             font-family: 'Arial', sans-serif;
-            color: white;
+            background: linear-gradient(to bottom, #4facfe, #f093fb); /* Gradient from blue to pink */
+            color: #333;
+        }
+
+        .container {
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            justify-content: flex-start;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 1;
-        }
-
-        header {
-            position: relative;
-            z-index: 2;
-            background-color: rgba(0, 0, 0, 0.7);
+            height: 100vh;
             padding: 20px;
+        }
+
+        .login-box, .register-box {
+            background-color: white;
             width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            font-weight: bold;
+        .logo {
+            width: 100px; /* Logo width for larger screens */
+            max-width: 100%;
+            margin-bottom: 20px;
         }
 
-        .dashboard {
-            position: relative;
-            z-index: 2;
-            display: flex;
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input {
             width: 100%;
-            max-width: 1200px;
-            padding: 20px;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .section {
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 15px;
-            padding: 20px;
-            width: 30%;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .data-table th, .data-table td {
-            border: 1px solid #fff;
             padding: 10px;
-            text-align: center;
-        }
-
-        .data-table th {
-            background-color: #4a90e2;
-        }
-
-        #recent-image {
-            width: 100%;
-            height: auto;
-            border-radius: 15px;
-            cursor: pointer;
-            object-fit: cover;
-        }
-
-        .view-all-btn {
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            padding: 10px 20px;
+            border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #1877F2;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
             cursor: pointer;
             margin-top: 10px;
         }
 
-        .view-all-btn:hover {
-            background-color: #357abd;
+        button:hover {
+            background-color: #155db0;
         }
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 3;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.9);
+        .message {
+            text-align: center;
+            margin-top: 10px;
+            color: red;
         }
 
-        .modal-content {
-            background-color: rgba(0, 0, 0, 0.8);
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 15px;
-            width: 80%;
-            max-width: 1200px;
-            position: relative;
+        .link {
+            text-align: center;
+            margin-top: 15px;
         }
 
-        .close {
-            color: white;
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 30px;
-            cursor: pointer;
+        .link a {
+            color: #1877F2;
+            text-decoration: none;
         }
 
-        .close:hover {
-            color: #4a90e2;
+        .link a:hover {
+            text-decoration: underline;
         }
 
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
+        /* Media queries for mobile responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .login-box, .register-box {
+                padding: 20px;
+            }
+
+            .logo {
+                width: 80px; /* Resize logo for tablets */
+            }
+
+            button {
+                font-size: 14px;
+                padding: 8px;
+            }
         }
 
-        .image-grid img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            cursor: pointer;
-        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
 
-        .image-grid img:hover {
-            transform: scale(1.05);
-        }
+            .login-box, .register-box {
+                padding: 15px;
+            }
 
-        .image-modal {
-            display: none;
-            position: fixed;
-            z-index: 4;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.9);
-        }
+            .logo {
+                width: 60px; /* Resize logo for smaller mobile devices */
+            }
 
-        .image-modal-content {
-            margin: auto;
-            display: block;
-            max-width: 90%;
-            max-height: 90%;
-        }
-
-        .image-modal-close {
-            color: white;
-            position: absolute;
-            top: 20px;
-            right: 35px;
-            font-size: 40px;
-            cursor: pointer;
-        }
-
-        .image-modal-close:hover {
-            color: #4a90e2;
+            button {
+                font-size: 14px;
+                padding: 8px;
+            }
         }
     </style>
 </head>
-
 <body>
-    <header>
-        <h1>Smoking Detection Dashboard</h1>
-    </header>
 
-    <div class="dashboard">
-        <div class="section">
-            <h2>Data History</h2>
-            <table class="data-table" id="data-history-table">
-                <thead>
-                    <tr>
-                        <th>Date & Time</th>
-                        <th>Location</th>
-                        <th>Confidence Level</th>
-                    </tr>
-                </thead>
-                <tbody id="data-table-body"></tbody>
-            </table>
-            <button class="view-all-btn" onclick="viewAllData()">View All</button>
+<div class="container">
+    <!-- Login Box -->
+    <div class="login-box" id="login-box">
+        <img src="logo.png" alt="Logo" class="logo"> <!-- Add your logo image here -->
+        <h2>Login</h2>
+        <div class="input-group">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" placeholder="Enter your email" required>
         </div>
-        <div class="section">
-            <h2>Recent Location</h2>
-            <p id="recent-location">Loading...</p>
+        <div class="input-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="Enter your password" required>
         </div>
-        <div class="section">
-            <h2>Recent Image</h2>
-            <img id="recent-image" src="" alt="Recent Image">
-            <p id="recent-image-time"></p>
-            <button class="view-all-btn" onclick="viewAllImages()">View All</button>
+        <button onclick="loginUser()">Login</button>
+        <div class="message" id="login-message"></div>
+        <div class="link">
+            <a href="#" onclick="showReset()">Forgot Password?</a>
+        </div>
+        <div class="link">
+            <a href="#" onclick="showRegister()">Don't have an account? Register</a>
         </div>
     </div>
 
-    <!-- Modal for viewing all data -->
-    <div id="data-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeDataModal()">&times;</span>
-            <h2>All Data History</h2>
-            <table class="data-table" id="all-data-table">
-                <thead>
-                    <tr>
-                        <th>Date & Time</th>
-                        <th>Location</th>
-                        <th>Confidence Level</th>
-                    </tr>
-                </thead>
-                <tbody id="all-data-table-body"></tbody>
-            </table>
-            <button class="view-all-btn" onclick="downloadData()">Download Data</button>
+    <!-- Register Box (Initially hidden) -->
+    <div class="register-box" id="register-box" style="display: none;">
+        <img src="logo.png" alt="Logo" class="logo"> <!-- Add your logo image here -->
+        <h2>Register</h2>
+        <div class="input-group">
+            <label for="register-email">Email</label>
+            <input type="email" id="register-email" placeholder="Enter your email" required>
+        </div>
+        <div class="input-group">
+            <label for="register-password">Password</label>
+            <input type="password" id="register-password" placeholder="Enter your password" required>
+        </div>
+        <button onclick="registerUser()">Register</button>
+        <div class="message" id="register-message"></div>
+        <div class="link">
+            <a href="#" onclick="showLogin()">Already have an account? Login</a>
         </div>
     </div>
 
-    <!-- Modal for viewing all images -->
-    <div id="images-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeImagesModal()">&times;</span>
-            <h2>All Images</h2>
-            <div class="image-grid" id="image-grid"></div>
+    <!-- Reset Password Box (Initially hidden) -->
+    <div class="register-box" id="reset-box" style="display: none;">
+        <img src="logo.png" alt="Logo" class="logo"> <!-- Add your logo image here -->
+        <h2>Reset Password</h2>
+        <div class="input-group">
+            <label for="reset-email">Email</label>
+            <input type="email" id="reset-email" placeholder="Enter your email" required>
+        </div>
+        <button onclick="resetPassword()">Reset Password</button>
+        <div class="message" id="reset-message"></div>
+        <div class="link">
+            <a href="#" onclick="showLogin()">Back to Login</a>
         </div>
     </div>
+</div>
 
-    <!-- Modal for viewing individual image -->
-    <div id="image-modal" class="image-modal">
-        <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
-        <img class="image-modal-content" id="modal-image">
-    </div>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBmWpORtzUDjJaq_BW-Qsv69xYl6yJE2do",
-            authDomain: "gamefi-integer.firebaseapp.com",
-            databaseURL: "https://gamefi-integer-default-rtdb.firebaseio.com",
-            projectId: "gamefi-integer",
-            storageBucket: "gamefi-integer.firebasestorage.app",
-            messagingSenderId: "1001928239471",
-            appId: "1:1001928239471:web:337f34480a33d6ae21a09a"
-        };
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+<script>
+    // Firebase configuration (replace with your actual Firebase project config)
+    const firebaseConfig = {
+        apiKey: "AIzaSyAeHJM-GN1rQ5ETxKc2uJcb4Btm2WixXf8",
+        authDomain: "smoke-vape-detection.firebaseapp.com",
+        projectId: "smoke-vape-detection",
+        storageBucket: "smoke-vape-detection.appspot.com",
+        messagingSenderId: "844611007661",
+        appId: "1:844611007661:web:7568a7e7028e1174a0c224"
+    };
 
-        function fetchDashboardData() {
-            const dataRef = db.ref('smoking_detections');
-            dataRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (!data) return;
-                const keys = Object.keys(data).reverse();
-                const tableBody = document.getElementById('data-table-body');
-                tableBody.innerHTML = '';
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-                keys.slice(0, 5).forEach((key) => {
-                    const entry = data[key];
-                    const confidencePercent = (entry.confidence * 100).toFixed(2);
-                    const row = `<tr>
-                                    <td>${entry.timestamp}</td>
-                                    <td>${entry.location}</td>
-                                    <td>${confidencePercent}%</td>
-                                </tr>`;
-                    tableBody.innerHTML += row;
-                });
+    // Login user
+    function loginUser() {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
 
-                if (keys.length > 0) {
-                    const recentData = data[keys[0]];
-                    document.getElementById('recent-location').innerText = recentData.location;
-                    document.getElementById('recent-image').src = `data:image/jpeg;base64,${recentData.image_base64}`;
-                    document.getElementById('recent-image-time').innerText = `Captured on: ${recentData.timestamp}`;
-                }
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                // Redirect to main.page if login is successful
+                window.location.href = "main.html";
+            })
+            .catch((error) => {
+                document.getElementById('login-message').innerHTML = error.message;
             });
-        }
+    }
 
-        function viewAllData() {
-            const dataRef = db.ref('smoking_detections');
-            dataRef.once('value', (snapshot) => {
-                const data = snapshot.val();
-                if (!data) return;
-                const keys = Object.keys(data).reverse();
-                const tableBody = document.getElementById('all-data-table-body');
-                tableBody.innerHTML = '';
+    // Register user
+    function registerUser() {
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
 
-                keys.forEach((key) => {
-                    const entry = data[key];
-                    const confidencePercent = (entry.confidence * 100).toFixed(2);
-                    const row = `<tr>
-                                    <td>${entry.timestamp}</td>
-                                    <td>${entry.location}</td>
-                                    <td>${confidencePercent}%</td>
-                                </tr>`;
-                    tableBody.innerHTML += row;
-                });
-
-                document.getElementById('data-modal').style.display = 'block';
+        auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                document.getElementById('register-message').innerHTML = "Registration successful!";
+            })
+            .catch((error) => {
+                document.getElementById('register-message').innerHTML = error.message;
             });
-        }
+    }
 
-        function closeDataModal() {
-            document.getElementById('data-modal').style.display = 'none';
-        }
+    // Reset password
+    function resetPassword() {
+        const email = document.getElementById('reset-email').value;
 
-        function downloadData() {
-            const table = document.getElementById('all-data-table');
-            const ws = XLSX.utils.table_to_sheet(table);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Data History");
-            XLSX.writeFile(wb, "data_history.xlsx");
-        }
-
-        function viewAllImages() {
-            const dataRef = db.ref('smoking_detections');
-            dataRef.once('value', (snapshot) => {
-                const data = snapshot.val();
-                if (!data) return;
-                const keys = Object.keys(data).reverse();
-                const imageGrid = document.getElementById('image-grid');
-                imageGrid.innerHTML = '';
-
-                keys.forEach((key) => {
-                    const entry = data[key];
-                    const image = document.createElement('img');
-                    image.src = `data:image/jpeg;base64,${entry.image_base64}`;
-                    image.alt = `Image captured on ${entry.timestamp}`;
-                    image.onclick = () => openImageModal(entry.image_base64, entry.timestamp, entry.confidence);
-                    const imageContainer = document.createElement('div');
-                    imageContainer.innerHTML = `<p>${entry.timestamp} - Confidence: ${(entry.confidence * 100).toFixed(2)}%</p>`;
-                    imageContainer.appendChild(image);
-                    imageGrid.appendChild(imageContainer);
-                });
-
-                document.getElementById('images-modal').style.display = 'block';
+        auth.sendPasswordResetEmail(email)
+            .then(() => {
+                document.getElementById('reset-message').innerHTML = "Password reset email sent!";
+            })
+            .catch((error) => {
+                document.getElementById('reset-message').innerHTML = error.message;
             });
-        }
+    }
 
-        function closeImagesModal() {
-            document.getElementById('images-modal').style.display = 'none';
-        }
+    // Switch to register form
+    function showRegister() {
+        document.getElementById('login-box').style.display = 'none';
+        document.getElementById('register-box').style.display = 'block';
+        document.getElementById('reset-box').style.display = 'none';
+    }
 
-        function openImageModal(imageBase64, timestamp, confidence) {
-            const modalImage = document.getElementById('modal-image');
-            modalImage.src = `data:image/jpeg;base64,${imageBase64}`;
-            modalImage.alt = `Image captured on ${timestamp} - Confidence: ${(confidence * 100).toFixed(2)}%`;
-            document.getElementById('image-modal').style.display = 'block';
-        }
+    // Switch to login form
+    function showLogin() {
+        document.getElementById('login-box').style.display = 'block';
+        document.getElementById('register-box').style.display = 'none';
+        document.getElementById('reset-box').style.display = 'none';
+    }
 
-        function closeImageModal() {
-            document.getElementById('image-modal').style.display = 'none';
-        }
-
-        window.onload = () => {
-            fetchDashboardData();
-        };
-    </script>
-
+    // Switch to reset password form
+    function showReset() {
+        document.getElementById('login-box').style.display = 'none';
+        document.getElementById('register-box').style.display = 'none';
+        document.getElementById('reset-box').style.display = 'block';
+    }
+</script>
 </body>
-
-</html>   7
+</html>
