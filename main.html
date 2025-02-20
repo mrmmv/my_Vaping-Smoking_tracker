@@ -6,97 +6,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smoking Detection Dashboard</title>
     <style>
+        /* General Styles */
         body {
             margin: 0;
             padding: 0;
-            background: #f0f8ff; /* Light blue background */
             font-family: 'Arial', sans-serif;
+            background: #f0f2f5;
             color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            position: relative;
         }
 
-        header {
-            position: relative;
-            z-index: 2;
-            background-color: #001f3f; /* Navy blue */
-            padding: 20px;
+        /* Top Navigation Bar */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            text-align: center;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            background: #001f3f;
+            padding: 10px 20px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 10px;
+            justify-content: center; /* Center the title */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 100;
         }
 
-        header h1 {
+        .top-nav .logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .top-nav h1 {
             margin: 0;
-            font-size: 2.5em;
-            font-weight: bold;
+            font-size: 1.5em;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .logo {
-            width: 50px;
-            height: 50px;
-        }
-
-        .logout {
+        .top-nav .menu-btn {
             position: absolute;
-            right: 20px;
-            display: flex;
-            align-items: center;
+            left: 20px;
+            background: none;
+            border: none;
             color: white;
-            text-decoration: none;
-            font-size: 1.2em;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
+            font-size: 1.5em;
+            cursor: pointer;
         }
 
-        .logout:hover {
-            background-color: rgba(255, 255, 255, 0.2);
+        /* Sidebar Menu */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background: #001f3f;
+            transition: left 0.3s ease;
+            z-index: 99;
+            padding-top: 60px;
         }
 
-        .logout img {
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            text-align: left;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar button img {
             width: 20px;
             height: 20px;
-            margin-right: 8px;
+            margin-right: 10px;
         }
 
-        .dashboard {
-            position: relative;
-            z-index: 2;
+        /* Main Content */
+        .main-content {
+            margin-top: 70px;
+            padding: 20px;
             display: flex;
-            width: 100%;
-            max-width: 1200px;
-            padding: 20px;
-            justify-content: center;
-            gap: 20px;
             flex-wrap: wrap;
-            margin-bottom: 20px; /* Space for footer */
+            gap: 20px;
+            justify-content: center;
         }
 
-        .section {
-            background: white; /* White background */
-            border-radius: 15px;
+        .card {
+            background: white;
+            border-radius: 10px;
             padding: 20px;
-            width: 30%;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(50% - 40px); /* Two cards per row on desktop */
+            max-width: calc(50% - 40px); /* Limit width for desktop */
         }
 
-        .section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+        .card h2 {
+            margin-top: 0;
         }
 
         .data-table {
@@ -104,81 +120,124 @@
             border-collapse: collapse;
         }
 
-        .data-table th, .data-table td {
+        .data-table th,
+        .data-table td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: center;
         }
 
         .data-table th {
-            background-color: #001f3f; /* Navy blue */
+            background-color: #001f3f;
             color: white;
         }
 
         #recent-image {
             width: 100%;
             height: auto;
-            border-radius: 15px;
+            border-radius: 10px;
             cursor: pointer;
             object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        #recent-image:hover {
-            transform: scale(1.05);
         }
 
         .view-all-btn {
-            background-color: #001f3f; /* Navy blue */
+            background: #001f3f;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px;
             border-radius: 5px;
+            width: 100%;
             cursor: pointer;
             margin-top: 10px;
-            width: 100%;
-            transition: background-color 0.3s ease;
         }
 
         .view-all-btn:hover {
-            background-color: #003366; /* Darker navy blue */
+            background: #003366;
         }
 
-        .modal {
+        /* Developer Info Modal */
+        .developer-info {
             display: none;
             position: fixed;
-            z-index: 3;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.9);
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
             padding: 20px;
-            border-radius: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 101;
             width: 90%;
-            max-width: 1200px;
-            position: relative;
+            max-width: 600px;
         }
 
-        .close {
-            color: #333;
+        .developer-info.open {
+            display: block;
+        }
+
+        .developer-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .developer-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .developer-details {
+            flex: 1;
+        }
+
+        .developer-details p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .close-dev-info {
             position: absolute;
             top: 10px;
-            right: 20px;
-            font-size: 30px;
+            right: 15px;
+            font-size: 1.5em;
             cursor: pointer;
         }
 
-        .close:hover {
-            color: #001f3f; /* Navy blue */
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
         }
 
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .close {
+            float: right;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        /* Image Grid */
         .image-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -190,122 +249,68 @@
             height: auto;
             border-radius: 10px;
             cursor: pointer;
-            transition: transform 0.3s ease;
         }
 
-        .image-grid img:hover {
-            transform: scale(1.05);
-        }
-
-        .image-modal {
-            display: none;
-            position: fixed;
-            z-index: 4;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .image-modal-content {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 10px;
-        }
-
-        .image-modal-close {
-            color: white;
-            position: absolute;
-            top: 20px;
-            right: 35px;
-            font-size: 40px;
-            cursor: pointer;
-        }
-
-        .image-modal-close:hover {
-            color: #001f3f; /* Navy blue */
-        }
-
-        .download-btn {
-            background-color: #001f3f; /* Navy blue */
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 5px;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
-
-        .download-btn:hover {
-            background-color: #003366; /* Darker navy blue */
-        }
-
+        /* Footer */
         footer {
             text-align: center;
-            padding: 10px 0;
-            font-size: 0.9em;
-            color: #001f3f; /* Navy blue */
-            width: 100%;
-            margin-top: auto; /* Push footer to the bottom */
+            padding: 20px;
+            background: #001f3f;
+            color: white;
+            margin-top: 20px;
         }
 
-        /* Mobile Responsiveness */
+        /* Responsive Design */
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 2em; /* Smaller font size for mobile */
-            }
-
-            .dashboard {
+            .main-content {
                 flex-direction: column;
-                align-items: center;
-                padding: 10px; /* Reduced padding for mobile */
             }
 
-            .section {
-                width: 100%; /* Full width for mobile */
-                max-width: 100%; /* No max-width for mobile */
-                padding: 15px; /* Reduced padding for mobile */
+            .card {
+                flex: 1 1 100%;
+                max-width: 100%;
             }
 
-            .view-all-btn, .download-btn {
-                width: 100%; /* Full width buttons for mobile */
+            .top-nav h1 {
+                font-size: 1.2em;
             }
 
-            .data-table th, .data-table td {
-                padding: 8px; /* Reduced padding for mobile */
+            .developer-content {
+                flex-direction: column;
+                text-align: center;
             }
 
-            .modal-content {
-                width: 95%; /* Wider modal for mobile */
-                margin: 10% auto; /* Adjusted margin for mobile */
-            }
-
-            .image-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Smaller grid for mobile */
+            .developer-image {
+                width: 100px;
+                height: 100px;
             }
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <img src="https://cdn-icons-png.flaticon.com/256/998/998699.png" alt="No Smoking Logo" class="logo">
+    <!-- Top Navigation Bar -->
+    <div class="top-nav">
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+        <img src="https://cdn-icons-png.flaticon.com/256/998/998699.png" alt="Logo" class="logo">
         <h1>Smoking Detection Dashboard</h1>
-        <a href="index.html" class="logout">
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <button onclick="showDeveloperInfo()">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Developer Info Icon">
+            Developer Info
+        </button>
+        <button onclick="logout()">
             <img src="https://cdn-icons-png.flaticon.com/512/1828/1828479.png" alt="Logout Icon">
             Logout
-        </a>
-    </header>
+        </button>
+    </div>
 
-    <div class="dashboard">
-        <div class="section">
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="card">
             <h2>Data History</h2>
             <table class="data-table" id="data-history-table">
                 <thead>
@@ -319,7 +324,8 @@
             </table>
             <button class="view-all-btn" onclick="viewAllData()">View All</button>
         </div>
-        <div class="section">
+
+        <div class="card">
             <h2>Recent Image</h2>
             <img id="recent-image" src="" alt="Recent Image">
             <p id="recent-image-time"></p>
@@ -328,7 +334,23 @@
         </div>
     </div>
 
-    <!-- Modal for viewing all data -->
+    <!-- Developer Info Modal -->
+    <div class="developer-info" id="developer-info">
+        <span class="close-dev-info" onclick="closeDeveloperInfo()">&times;</span>
+        <h2>Developer Information</h2>
+        <div class="developer-content">
+            <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Developer Image" class="developer-image">
+            <div class="developer-details">
+                <p><strong>Name:</strong> John Doe</p>
+                <p><strong>Email:</strong> john.doe@example.com</p>
+                <p><strong>Phone:</strong> +1234567890</p>
+                <p><strong>Role:</strong> Lead AI Developer</p>
+                <p><strong>About:</strong> John is a seasoned AI developer with over 8 years of experience in computer vision and machine learning. He specializes in real-time detection systems and has contributed to numerous projects in behavioral analytics.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for Data and Images -->
     <div id="data-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeDataModal()">&times;</span>
@@ -347,7 +369,6 @@
         </div>
     </div>
 
-    <!-- Modal for viewing all images -->
     <div id="images-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeImagesModal()">&times;</span>
@@ -356,14 +377,9 @@
         </div>
     </div>
 
-    <!-- Modal for viewing individual image -->
-    <div id="image-modal" class="image-modal">
-        <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
-        <img class="image-modal-content" id="modal-image">
-    </div>
-
+    <!-- Footer -->
     <footer>
-        Powered by: AI Smoking Detection and Notification ©2025
+        Powered by: AI Smoking Detection © 2025
     </footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -431,12 +447,12 @@
                     tableBody.innerHTML += row;
                 });
 
-                document.getElementById('data-modal').style.display = 'block';
+                document.getElementById('data-modal').classList.add('open');
             });
         }
 
         function closeDataModal() {
-            document.getElementById('data-modal').style.display = 'none';
+            document.getElementById('data-modal').classList.remove('open');
         }
 
         function downloadData() {
@@ -473,23 +489,23 @@
                     imageGrid.appendChild(imageContainer);
                 });
 
-                document.getElementById('images-modal').style.display = 'block';
+                document.getElementById('images-modal').classList.add('open');
             });
         }
 
         function closeImagesModal() {
-            document.getElementById('images-modal').style.display = 'none';
+            document.getElementById('images-modal').classList.remove('open');
         }
 
         function openImageModal(imageBase64, timestamp, confidence) {
             const modalImage = document.getElementById('modal-image');
             modalImage.src = `data:image/jpeg;base64,${imageBase64}`;
             modalImage.alt = `Image captured on ${timestamp} - Confidence: ${(confidence * 100).toFixed(2)}%`;
-            document.getElementById('image-modal').style.display = 'flex';
+            document.getElementById('image-modal').classList.add('open');
         }
 
         function closeImageModal() {
-            document.getElementById('image-modal').style.display = 'none';
+            document.getElementById('image-modal').classList.remove('open');
         }
 
         function downloadImage(imageBase64, timestamp, confidence) {
@@ -500,14 +516,29 @@
             link.click();
         }
 
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        function showDeveloperInfo() {
+            const devInfo = document.getElementById('developer-info');
+            devInfo.classList.add('open');
+        }
+
+        function closeDeveloperInfo() {
+            const devInfo = document.getElementById('developer-info');
+            devInfo.classList.remove('open');
+        }
+
+        function logout() {
+            window.location.href = 'index.html';
+        }
+
         window.onload = () => {
             fetchDashboardData();
         };
     </script>
-
 </body>
 
 </html>
-
-
-
