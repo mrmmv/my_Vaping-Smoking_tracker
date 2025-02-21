@@ -532,6 +532,9 @@
         }
 
         function logout() {
+            // Replace the current history entry with index.html
+            history.replaceState(null, '', 'index.html');
+            // Redirect to index.html
             window.location.href = 'index.html';
         }
 
